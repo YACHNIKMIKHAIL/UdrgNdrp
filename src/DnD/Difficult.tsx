@@ -62,7 +62,7 @@ const Difficult = () => {
         const dropIndex = board.items.indexOf(card)
         board.items.splice(dropIndex + 1, 0, currentItem)
 
-        setBoards(boards.map((b: BoardType)=> {
+        setBoards(boards.map((b: BoardType) => {
             if (b) {
                 if (b.id === board.id) {
                     return board
@@ -112,16 +112,13 @@ const Difficult = () => {
     }
     return (
         <div className={'app'}>
-            {boards.sort(sortBoards).map((board: BoardType) =>
-                <div className={'board'} key={board?.id}
-                     // draggable
-                     onDragStart={(e) => onDragStartBoardHandler(e, board)}
-                     onDragOver={(e) => onDragItemOverHandler(e)}
-                     onDrop={(e) => {
-                         onDropCardHandler(e, board)
-                         // onDropBoardHandler(e, board)
-
-                     }}
+            {boards.sort(sortBoards).map((board: BoardType) => {
+                return <div className={'board'} key={board?.id}
+                            onDragStart={(e) => onDragStartBoardHandler(e, board)}
+                            onDragOver={(e) => onDragItemOverHandler(e)}
+                            onDrop={(e) => {
+                                onDropCardHandler(e, board)
+                            }}
                 >
                     <div className={'board__title'}>
                         {board?.title}
@@ -139,7 +136,9 @@ const Difficult = () => {
                             </div>
                         }
                     )}
-                </div>)}
+                </div>
+            })
+            }
         </div>
     );
 };

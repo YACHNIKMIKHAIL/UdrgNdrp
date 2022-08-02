@@ -21,26 +21,13 @@ const Single = () => {
 
     }
     const onDragEndHandler = (e: React.SyntheticEvent) => {
-        //@ts-ignore
-        // e.target.style.background = 'white'
     }
     const onDragOverHandler = (e: React.SyntheticEvent) => {
         e.preventDefault()
-        //@ts-ignore
-        // e.target.style.background = 'lightgray'
-
     }
     const onDropHandler = (e: React.SyntheticEvent, card: CardType) => {
         e.preventDefault()
-        // setCardList(cardList.map(c => {
-        //
-        //     return c.id === card.id && currentCard
-        //         ? {...c, order: currentCard.order}
-        //         : currentCard && c.id === currentCard.id
-        //             ? {...c, order: card.order}
-        //             : c
-        // }))
-        // e.target.style.background='white'
+
         setCardList(cardList.map(c => {
                 if (c.id === card.id) {
                     return {...c, order: currentCard.order}
