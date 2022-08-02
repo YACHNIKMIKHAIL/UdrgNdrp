@@ -5,7 +5,11 @@ import Difficult from "./DnD/Difficult";
 
 function App() {
     return (
+        <>
+            <Single/>
             <Difficult/>
+        </>
+
     );
 }
 

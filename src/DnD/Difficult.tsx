@@ -33,7 +33,7 @@ type BoardType = {
     items: ItemType[]
 }
 const Difficult = () => {
-    const [boards, setBoards] = useState<(BoardType | null)[]>(initialState)
+    const [boards, setBoards] = useState<any>(initialState)
     const [currentBoard, setCurrentBoard] = useState<any>(null)
     const [currentItem, setCurrentItem] = useState<any>(null)
 
@@ -62,7 +62,7 @@ const Difficult = () => {
         const dropIndex = board.items.indexOf(card)
         board.items.splice(dropIndex + 1, 0, currentItem)
 
-        setBoards(boards.map(b => {
+        setBoards(boards.map((b: BoardType) => {
             if (b) {
                 if (b.id === board.id) {
                     return board
@@ -79,20 +79,22 @@ const Difficult = () => {
         board.items.push(currentItem)
         const currentIndex = currentBoard.items.indexOf(currentItem)
         currentBoard.items.splice(currentIndex, 1)
-        setBoards(boards.map(b => {
-                if (b?.id === board.id) {
-                    return board
-                }
-                if (b?.id === currentBoard.id) {
-                    return currentBoard
-                }
-                return b
+        setBoards(boards.map((b: BoardType) => {
+            if (b?.id === board.id) {
+                return board
+            }
+            if (b?.id === currentBoard.id) {
+                return currentBoard
+            }
+            return b
         }))
         e.target.style.boxShadow = 'none'
     }
+
+
     return (
         <div className={'app'}>
-            {boards.map(board =>
+            {boards.map((board: BoardType) =>
                 <div className={'board'} key={board?.id}
                      onDragOver={(e) => onDragItemOverHandler(e)}
                      onDrop={(e) => onDropCardHandler(e, board)}
