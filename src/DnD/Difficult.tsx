@@ -34,6 +34,7 @@ type BoardType = {
 }
 const Difficult = () => {
     const [boards, setBoards] = useState<any>(initialState)
+    const [currentDragBoard, setCurrentDragBoard] = useState<any>(null)
     const [currentBoard, setCurrentBoard] = useState<any>(null)
     const [currentItem, setCurrentItem] = useState<any>(null)
 
@@ -91,28 +92,53 @@ const Difficult = () => {
         e.target.style.boxShadow = 'none'
     }
 
-
+    const sortBoards = (a: BoardType, b: BoardType) => {
+        return a.id > b.id ? 1 : -1
+    }
+    const onDragStartBoardHandler = (e: React.SyntheticEvent, board: BoardType) => {
+        setCurrentDragBoard(board)
+    }
+    const onDropBoardHandler = (e: React.SyntheticEvent, board: BoardType) => {
+        debugger
+        e.preventDefault()
+        setBoards(boards.map((b:BoardType) => {
+            debugger
+            return b.id === board.id && currentDragBoard
+                ? {...b, id: currentDragBoard.id}
+                : currentDragBoard && b.id === currentDragBoard.id
+                    ? {...b, id: board.id}
+                    : b
+        }))
+        // e.target.style.background='white'
+        // onDropCardHandler(e, board)
+    }
     return (
         <div className={'app'}>
-            {boards.map((board: BoardType) =>
+            {boards.sort(sortBoards).map((board: BoardType) =>
                 <div className={'board'} key={board?.id}
+                     draggable
+                     onDragStart={(e) => onDragStartBoardHandler(e, board)}
                      onDragOver={(e) => onDragItemOverHandler(e)}
-                     onDrop={(e) => onDropCardHandler(e, board)}
+                     onDrop={(e) => {
+                         onDropBoardHandler(e, board)
+                         // onDropCardHandler(e, board)
+                     }}
                 >
                     <div className={'board__title'}>
                         {board?.title}
                     </div>
-                    {board?.items.map(item =>
-                        <div className={'item'} key={item.id}
-                             draggable
-                             onDragStart={(e) => onDragItemStartHandler(e, board, item)}
-                             onDragLeave={(e) => onDragItemLeaveHandler(e)}
-                             onDragEnd={(e) => onDragItemEndHandler(e)}
-                             onDragOver={(e) => onDragItemOverHandler(e)}
-                             onDrop={(e) => onDropItemHandler(e, board, item)}
-                        >
-                            {item.title}
-                        </div>
+                    {board.items.map(item => {
+                           return <div className={'item'} key={item.id}
+                                 draggable
+                                 onDragStart={(e) => onDragItemStartHandler(e, board, item)}
+                                 onDragLeave={(e) => onDragItemLeaveHandler(e)}
+                                 onDragEnd={(e) => onDragItemEndHandler(e)}
+                                 onDragOver={(e) => onDragItemOverHandler(e)}
+                                 onDrop={(e) => onDropItemHandler(e, board, item)}
+                            >
+                                {item.title}
+                            </div>
+                        }
                     )}
                 </div>)}
         </div>
