@@ -1,47 +1,101 @@
 import React, {useState} from 'react';
+import {v1} from 'uuid';
 import './../App.css';
 
 
 const initialState: BoardType[] = [
     {
-        id: 1, title: 'What to do?', items: [
-            {id: 1, title: 'Go to shop'},
-            {id: 2, title: 'Clear room'}
+        id: v1(), title: 'What to do?', items: [
+            {id: v1(), title: 'Go to shop'},
+            {id: v1(), title: 'Clear room'}
         ]
     },
     {
-        id: 2, title: 'What to check?', items: [
-            {id: 3, title: 'Code review'},
-            {id: 4, title: 'Task for DnD'}
+        id: v1(), title: 'What to check?', items: [
+            {id: v1(), title: 'Code review'},
+            {id: v1(), title: 'Task for DnD'}
         ]
     },
     {
-        id: 3, title: 'What is done?', items: [
-            {id: 5, title: 'Call to detka'},
-            {id: 6, title: 'Wrote app '}
+        id: v1(), title: 'What is done?', items: [
+            {id: v1(), title: 'Call to detka'},
+            {id: v1(), title: 'Wrote app '}
         ]
     }
 ]
 type ItemType = {
-    id: number
+    id: string
     title: string
 }
 type BoardType = {
-    id: number
+    id: string
     title: string
     items: ItemType[]
 }
+const initCurrent=null
 const Difficult = () => {
-    const [boards, setBoards] = useState<BoardType[]>(initialState)
+    const [boards, setBoards] = useState<(BoardType | null)[]>(initialState)
+    const [currentBoard, setCurrentBoard] = useState<any>(null)
+    const [currentItem, setCurrentItem] = useState<any>(null)
+
+    const onDragItemStartHandler = (e: React.SyntheticEvent, board: BoardType, card: ItemType) => {
+        setCurrentBoard(board)
+        setCurrentItem(card)
+    }
+    const onDragItemLeaveHandler = (e: any) => {
+        e.target.style.boxShadow = 'none'
+
+    }
+    const onDragItemEndHandler = (e: any) => {
+        e.target.style.boxShadow = 'none'
+    }
+    const onDragItemOverHandler = (e: any) => {
+        e.preventDefault()
+        if (e.target.className === 'item') {
+            e.target.style.boxShadow = '0 4px 3px gray '
+        }
+
+    }
+    const onDropItemHandler = (e: React.SyntheticEvent, board: BoardType, card: ItemType) => {
+        e.preventDefault()
+        const currentIndex = currentBoard.items.indexOf(currentItem)
+        currentBoard.items.splice(currentIndex, 1)
+        const dropIndex = board.items.indexOf(card)
+        board.items.splice(dropIndex + 1, 0, currentItem)
+
+        setBoards(boards.map(b => {
+            if (b) {
+                if (b.id === board.id) {
+                    return board
+                }
+                if (b.id === currentBoard.id) {
+                    return currentBoard
+                }
+                return b
+            }
+        }))
+    }
+
+
+    const sortCards = (a: ItemType, b: ItemType) => {
+        return a.id > b.id ? 1 : -1
+    }
     return (
         <div className={'app'}>
             {boards.map(board =>
-                <div className={'board'} key={board.id}>
+                <div className={'board'} key={board?.id}>
                     <div className={'board__title'}>
-                        {board.title}
+                        {board?.title}
                     </div>
-                    {board.items.map(item =>
-                        <div className={'item'} key={item.id}>
+                    {board?.items.map(item =>
+                        <div className={'item'} key={item.id}
+                             draggable
+                             onDragStart={(e) => onDragItemStartHandler(e, board, item)}
+                             onDragLeave={(e) => onDragItemLeaveHandler(e)}
+                             onDragEnd={(e) => onDragItemEndHandler(e)}
+                             onDragOver={(e) => onDragItemOverHandler(e)}
+                             onDrop={(e) => onDropItemHandler(e, board, item)}
+                        >
                             {item.title}
                         </div>
                     )}
