@@ -32,7 +32,6 @@ type BoardType = {
     title: string
     items: ItemType[]
 }
-const initCurrent=null
 const Difficult = () => {
     const [boards, setBoards] = useState<(BoardType | null)[]>(initialState)
     const [currentBoard, setCurrentBoard] = useState<any>(null)
@@ -76,14 +75,28 @@ const Difficult = () => {
         }))
     }
 
-
-    const sortCards = (a: ItemType, b: ItemType) => {
-        return a.id > b.id ? 1 : -1
+    const onDropCardHandler = (e: any, board: any) => {
+        board.items.push(currentItem)
+        const currentIndex = currentBoard.items.indexOf(currentItem)
+        currentBoard.items.splice(currentIndex, 1)
+        setBoards(boards.map(b => {
+                if (b?.id === board.id) {
+                    return board
+                }
+                if (b?.id === currentBoard.id) {
+                    return currentBoard
+                }
+                return b
+        }))
+        e.target.style.boxShadow = 'none'
     }
     return (
         <div className={'app'}>
             {boards.map(board =>
-                <div className={'board'} key={board?.id}>
+                <div className={'board'} key={board?.id}
+                     onDragOver={(e) => onDragItemOverHandler(e)}
+                     onDrop={(e) => onDropCardHandler(e, board)}
+                >
                     <div className={'board__title'}>
                         {board?.title}
                     </div>
