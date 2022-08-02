@@ -12,10 +12,9 @@ const Single = () => {
         {id: 3, order: 2, text: 'card 2'},
         {id: 4, order: 4, text: 'card 4'},
     ])
-    const [currentCard, setCurrentCard] = useState<CardType | null>(null)
+    const [currentCard, setCurrentCard] = useState<any>(null)
 
     const onDragStartHandler = (e: React.SyntheticEvent, card: CardType) => {
-        console.log('onDragStartHandler', card)
         setCurrentCard(card)
     }
     const onDragLeaveHandler = (e: React.SyntheticEvent) => {
@@ -33,16 +32,26 @@ const Single = () => {
     }
     const onDropHandler = (e: React.SyntheticEvent, card: CardType) => {
         e.preventDefault()
-        console.log('onDropHandler', card)
-        setCardList(cardList.map(c => {
-
-            return c.id === card.id && currentCard
-                ? {...c, order: currentCard.order}
-                : currentCard && c.id === currentCard.id
-                    ? {...c, order: card.order}
-                    : c
-        }))
+        // setCardList(cardList.map(c => {
+        //
+        //     return c.id === card.id && currentCard
+        //         ? {...c, order: currentCard.order}
+        //         : currentCard && c.id === currentCard.id
+        //             ? {...c, order: card.order}
+        //             : c
+        // }))
         // e.target.style.background='white'
+        setCardList(cardList.map(c => {
+                if (c.id === card.id) {
+                    return {...c, order: currentCard.order}
+                }
+                if (c.id === currentCard.id) {
+                    return {...c, order: card.order}
+                }
+                return c
+            }
+        ))
+
     }
 
     const sortCards = (a: CardType, b: CardType) => {
