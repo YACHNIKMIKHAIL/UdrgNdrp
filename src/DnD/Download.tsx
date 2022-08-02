@@ -10,6 +10,15 @@ const Download = () => {
         e.preventDefault()
         setDrag(false)
     }
+    const onDropHandler = (e: any) => {
+        e.preventDefault()
+        let files = [...e.dataTransfer.files]
+        setDrag(false)
+        const formData = new FormData()
+        formData.append('file', files[0])
+
+        alert (`File: ${files[0].name} is sended!`)
+    }
     return (
         <div className={'app'}>
             {drag
@@ -17,6 +26,7 @@ const Download = () => {
                        onDragStart={e => onDragStarthandler(e)}
                        onDragLeave={e => onDragLeaveHandler(e)}
                        onDragOver={e => onDragStarthandler(e)}
+                       onDrop={e => onDropHandler(e)}
                 >Drop file for download it</div>
                 : <div
                     onDragStart={e => onDragStarthandler(e)}
